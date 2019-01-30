@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -43,27 +44,27 @@ public class Controller implements Initializable {
     private Tab tab1, tab2, tab3, tab4;
 
     private ObservableList dataList;
+    private ArrayList<Product> products;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        columnID.setCellValueFactory(new PropertyValueFactory<Product, Integer>("id"));
-        columnName.setCellValueFactory(new PropertyValueFactory<Product, String>("name"));
-        columnPrice.setCellValueFactory(new PropertyValueFactory<Product, Double>("price"));
-        columnAmount.setCellValueFactory(new PropertyValueFactory<Product, Integer>("amount"));
+        columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
+        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        columnAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         dataList = FXCollections.observableArrayList();
         table.setItems(dataList);
+        products = new ArrayList<>();
 
-        bLoadData.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                dataList.clear();
-                loadData();
-                tab1.setDisable(false);
-                tab2.setDisable(false);
-                tab3.setDisable(false);
-                tab4.setDisable(false);
-            }
+        bLoadData.setOnAction(event -> {
+            dataList.clear();
+            products.clear();
+            loadData();
+            tab1.setDisable(false);
+            tab2.setDisable(false);
+            tab3.setDisable(false);
+            tab4.setDisable(false);
         });
     }
 
@@ -81,8 +82,10 @@ public class Controller implements Initializable {
                 String[] fields = line.split(FieldDelimiter);
 
                 Product product = new Product(Integer.parseInt(fields[0]), fields[1], Double.parseDouble(fields[2]), Integer.parseInt(fields[3]));
+                products.add(product);
                 dataList.add(product);
             }
+//            System.out.println("prod. id: " + products.get(0).getId());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
