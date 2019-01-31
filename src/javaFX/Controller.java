@@ -1,6 +1,7 @@
 package javaFX;
 
 import data.Product;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,11 +10,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import services.ShowProducts;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -45,9 +44,17 @@ public class Controller implements Initializable {
 
     private ObservableList dataList;
     private ArrayList<Product> products;
+    OutputStream out;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        out = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                appendText(String.valueOf((char) b));
+            }
+        };
+
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
@@ -65,6 +72,11 @@ public class Controller implements Initializable {
             tab2.setDisable(false);
             tab3.setDisable(false);
             tab4.setDisable(false);
+        });
+
+        bShowProducts.setOnAction(event -> {
+            ShowProducts showProducts = new ShowProducts(out);
+            showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
         });
     }
 
@@ -92,5 +104,14 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void appendText(String text){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                taResults.appendText(text);
+            }
+        });
     }
 }
