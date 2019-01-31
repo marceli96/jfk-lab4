@@ -66,8 +66,6 @@ public class Controller implements Initializable {
             tab4.setDisable(false);
         });
 
-
-        tab1.setDisable(false);
         bChangePrices.setOnAction(event -> {
             String number = tfProcentValue.getText();
 
@@ -132,6 +130,6 @@ public class Controller implements Initializable {
     }
 
     public static boolean isNumeric(String str) {
-        return str.matches("((-?)|(\\+?))\\d+(\\.\\d+)?");
+        return str.matches("((-)|(\\+))\\d+(\\.\\d+)?");
     }
 }
