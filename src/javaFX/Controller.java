@@ -2,6 +2,8 @@ package javaFX;
 
 import data.Product;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -64,6 +66,15 @@ public class Controller implements Initializable {
         table.setItems(dataList);
         products = new ArrayList<>();
 
+        tfLimitValue.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    tfLimitValue.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
         bLoadData.setOnAction(event -> {
             dataList.clear();
             products.clear();
@@ -75,8 +86,11 @@ public class Controller implements Initializable {
         });
 
         bShowProducts.setOnAction(event -> {
-            ShowProducts showProducts = new ShowProducts(out);
-            showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
+            taResults.clear();
+            if(!tfLimitValue.getText().isEmpty()){
+                ShowProducts showProducts = new ShowProducts(out);
+                showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
+            }
         });
     }
 
