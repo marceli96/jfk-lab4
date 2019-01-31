@@ -1,12 +1,26 @@
 package services;
 
 import data.Product;
+import javafx.scene.control.TextArea;
 import org.jruby.embed.ScriptingContainer;
 
+import java.io.PrintStream;
+
 public class ProductPrice {
+    private TextArea textArea;
+
+    public ProductPrice(TextArea textArea) {
+        this.textArea = textArea;
+    }
 
     public void increaseDecrease(Product[] products, Double percent, Integer sign) {
+
+        PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
+        System.setOut(printStream);
+        System.setErr(printStream);
+
         ScriptingContainer container = new ScriptingContainer();
+
         String script =
                 "class Product\n" +
                     "attr_accessor :id, :name, :price, :amount\n" +
