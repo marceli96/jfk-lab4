@@ -1,6 +1,7 @@
 package javaFX;
 
 import data.Product;
+import rate.Value;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,10 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -65,6 +63,22 @@ public class Controller implements Initializable {
                 tab4.setDisable(false);
             }
         });
+
+        bCalculateAssortment.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                Product[] p = new Product[dataList.size()];
+
+                for (int i = 0; i < dataList.size(); i++)
+                {
+                    p[i] = (Product) dataList.get(i);
+                }
+
+                taResults.setEditable(false);
+                Value.count(p, taResults);
+            }
+        });
     }
 
     private void loadData() {
@@ -90,4 +104,5 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
+
 }
