@@ -84,6 +84,14 @@ public class Controller implements Initializable {
             tab4.setDisable(false);
         });
 
+        bShowProducts.setOnAction(event -> {
+            taResults.clear();
+            if(!tfLimitValue.getText().isEmpty()){
+                ShowProducts showProducts = new ShowProducts(out);
+                showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
+            }
+        });
+
         bChangePrices.setOnAction(event -> {
             String number = tfProcentValue.getText();
 
@@ -95,14 +103,12 @@ public class Controller implements Initializable {
                     System.out.println("Podwyzka o: " + value + "%");
                     System.out.println();
                     new ProductPrice(out).increaseDecrease(
-                            products.toArray(new Product[products.size()]), value, 0
-                    );
+                            products.toArray(new Product[products.size()]), value, 0);
                 } else {        // sign: -
                     System.out.println("Obnizka o: " + value + "%");
                     System.out.println();
                     new ProductPrice(out).increaseDecrease(
-                            products.toArray(new Product[products.size()]), value, 1
-                    );
+                            products.toArray(new Product[products.size()]), value, 1);
                 }
             } else {
                 System.out.println("Niepoprawny format");
@@ -116,14 +122,6 @@ public class Controller implements Initializable {
 //                products.toArray(new Product[products.size()]), value, sign
 //        );
 //        dataList.add(newProducts);
-
-        bShowProducts.setOnAction(event -> {
-            taResults.clear();
-            if(!tfLimitValue.getText().isEmpty()){
-                ShowProducts showProducts = new ShowProducts(out);
-                showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
-            }
-        });
     }
 
     private void loadData() {
