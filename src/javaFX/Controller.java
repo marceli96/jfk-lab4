@@ -76,13 +76,13 @@ public class Controller implements Initializable {
                 if (sign.equals("+")) {
                     System.out.println("Podwyzka o: " + value + "%");
                     System.out.println();
-                    new ProductPrice(taResults).increaseDecrease(
+                    new ProductPrice().increaseDecrease(
                             products.toArray(new Product[products.size()]), value, 0
                     );
                 } else {        // sign: -
                     System.out.println("Obnizka o: " + value + "%");
                     System.out.println();
-                    new ProductPrice(taResults).increaseDecrease(
+                    new ProductPrice().increaseDecrease(
                             products.toArray(new Product[products.size()]), value, 1
                     );
                 }
