@@ -1,6 +1,9 @@
 package javaFX;
 
 import data.Product;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,12 +12,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import services.ShowProducts;
 import services.ProductPrice;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -46,9 +47,17 @@ public class Controller implements Initializable {
 
     private ObservableList dataList;
     private ArrayList<Product> products;
+    OutputStream out;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        out = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                appendText(String.valueOf((char) b));
+            }
+        };
+
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
@@ -57,6 +66,15 @@ public class Controller implements Initializable {
         dataList = FXCollections.observableArrayList();
         products = new ArrayList<>();
         table.setItems(dataList);
+
+        tfLimitValue.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    tfLimitValue.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
 
         bLoadData.setOnAction(event -> {
             loadData();
@@ -76,13 +94,13 @@ public class Controller implements Initializable {
                 if (sign.equals("+")) {
                     System.out.println("Podwyzka o: " + value + "%");
                     System.out.println();
-                    new ProductPrice().increaseDecrease(
+                    new ProductPrice(out).increaseDecrease(
                             products.toArray(new Product[products.size()]), value, 0
                     );
                 } else {        // sign: -
                     System.out.println("Obnizka o: " + value + "%");
                     System.out.println();
-                    new ProductPrice().increaseDecrease(
+                    new ProductPrice(out).increaseDecrease(
                             products.toArray(new Product[products.size()]), value, 1
                     );
                 }
@@ -98,6 +116,14 @@ public class Controller implements Initializable {
 //                products.toArray(new Product[products.size()]), value, sign
 //        );
 //        dataList.add(newProducts);
+
+        bShowProducts.setOnAction(event -> {
+            taResults.clear();
+            if(!tfLimitValue.getText().isEmpty()){
+                ShowProducts showProducts = new ShowProducts(out);
+                showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
+            }
+        });
     }
 
     private void loadData() {
@@ -131,5 +157,14 @@ public class Controller implements Initializable {
 
     public static boolean isNumeric(String str) {
         return str.matches("((-)|(\\+))\\d+(\\.\\d+)?");
+    }
+
+    public void appendText(String text){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                taResults.appendText(text);
+            }
+        });
     }
 }
