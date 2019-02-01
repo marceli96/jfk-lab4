@@ -108,14 +108,6 @@ public class Controller implements Initializable {
                 System.out.println("Niepoprawny format");
             }
         });
-    }
-
-    private void updateDataList(double value, ProductPrice productPrice, int sign) {
-//        dataList.clear();
-//        Product[] newProducts = productPrice.increaseDecrease(
-//                products.toArray(new Product[products.size()]), value, sign
-//        );
-//        dataList.add(newProducts);
 
         bShowProducts.setOnAction(event -> {
             taResults.clear();
@@ -124,6 +116,14 @@ public class Controller implements Initializable {
                 showProducts.underLimit(products, Integer.parseInt(tfLimitValue.getText()));
             }
         });
+    }
+
+    private void updateDataList(double value, ProductPrice productPrice, int sign) {
+//        dataList.clear();
+//        Product[] newProducts = productPrice.increaseDecrease(
+//                products.toArray(new Product[products.size()]), value, sign
+//        );
+//        dataList.add(newProducts);
     }
 
     private void loadData() {
