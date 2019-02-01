@@ -41,6 +41,7 @@ public class Controller implements Initializable {
     private Tab tab1, tab2, tab3, tab4;
 
     private ObservableList dataList;
+    private Product[] p;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -51,6 +52,15 @@ public class Controller implements Initializable {
 
         dataList = FXCollections.observableArrayList();
         table.setItems(dataList);
+
+        p = new Product[dataList.size()];
+
+        for (int i = 0; i < dataList.size(); i++)
+        {
+            p[i] = (Product) dataList.get(i);
+        }
+
+        taResults.setEditable(false);
 
         bLoadData.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -68,15 +78,14 @@ public class Controller implements Initializable {
             @Override
             public void handle(ActionEvent event)
             {
-                Product[] p = new Product[dataList.size()];
+                Value.count(p, );
+            }
+        });
 
-                for (int i = 0; i < dataList.size(); i++)
-                {
-                    p[i] = (Product) dataList.get(i);
-                }
-
-                taResults.setEditable(false);
-                Value.count(p, taResults);
+        bCalculateNetto.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event)
+            {
             }
         });
     }

@@ -1,21 +1,27 @@
 package rate;
 
 import data.Product;
-import javafx.scene.control.TextArea;
 import org.jruby.embed.ScriptingContainer;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class Value
 {
-//      jRuby
-    public static void count(Product[] products, TextArea textArea)
+    private OutputStream outputStream;
+
+    Value(OutputStream outputStream)
     {
-        PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
-        System.setOut(printStream);
-        System.setErr(printStream);
+        this.outputStream = outputStream;
+    }
+//      jRuby
+    public void count(Product[] products)
+    {
+        PrintStream printStream = new PrintStream(outputStream);
 
         ScriptingContainer container = new ScriptingContainer();
+        container.setOutput(printStream);
+        container.setError(printStream);
 
         String script =
                 "def countRuby(mArray)\n" +
@@ -31,6 +37,7 @@ public class Value
                     "    puts value\n" +
                     "    puts \"\"\n" +
                 "end";
+
 
         Object receiver = container.runScriptlet(script);
         Object[] args = new Object[1];
